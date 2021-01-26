@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-public class SampleJob {
+public class WordCountExample {
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) {
