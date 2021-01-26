@@ -1,0 +1,105 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'java-library-distribution'
+    id 'com.google.protobuf'version '0.8.13'
+}
+
+sourceCompatibility = '1.8'
+mainClassName = 'edu.usfca.dataflow.Main'
+version = 'spring21'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+ext {
+    beamVersion = '2.22.0'
+    gcVersion = '1.75.0'
+    slf4jVersion = '1.7.14'
+    tfVersion = '1.15.0'
+}
+
+dependencies {
+    api 'com.google.protobuf:protobuf-java:3.5.1'
+
+    // apache
+    api group: 'org.apache.beam', name: 'beam-runners-google-cloud-dataflow-java', version: "${beamVersion}"
+    api group: 'org.apache.beam', name: 'beam-runners-core-construction-java', version: "${beamVersion}"
+    api group: 'org.apache.beam', name: 'beam-sdks-java-io-google-cloud-platform', version: "${beamVersion}"
+    api group: 'org.apache.beam', name: 'beam-runners-direct-java', version: "${beamVersion}"
+    api group: 'org.apache.beam', name: 'beam-sdks-java-io-xml', version: "${beamVersion}"
+
+    // tensorflow
+    api group: 'org.tensorflow', name: 'tensorflow', version: "${tfVersion}"
+    api group: 'org.tensorflow', name: 'proto', version: "${tfVersion}"
+    api group: 'org.tensorflow', name: 'libtensorflow', version: "${tfVersion}"
+
+    // google
+    api 'com.google.guava:guava:28.1-jre'
+    api group: 'com.google.cloud', name: 'google-cloud-bigquery', version: "${gcVersion}"
+    api group: 'com.google.cloud', name: 'google-cloud-storage', version: "${gcVersion}"
+
+    // annotation
+    api group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
+    api group: 'org.slf4j', name: 'slf4j-jdk14', version: "${slf4jVersion}"
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir "src/proto"
+        }
+        java {
+            srcDirs "src/main/java", "$projectDir/src/generated-sources"
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.2'
+    }
+    generatedFilesBaseDir = "$projectDir/src/generated-sources"
+    generateProtoTasks {
+        // all() returns the collection of all protoc tasks
+        all().each { task ->
+            // Here you can configure the task
+            task.builtins {
+                java
+            }
+        }
+        ofSourceSet('main')
+    }
+    clean {
+        delete generatedFilesBaseDir
+    }
+}
+
+// This is new (compared to Labs).
+run {
+    if (project.hasProperty('args')) {
+        def argArray = project.args.split('\\s')
+        println "---------- " + argArray.size() + " arguments -------- "
+        argArray.eachWithIndex { arg, i ->
+            println "---> arg[$i]: $arg"
+        }
+        args argArray
+    }
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+clean {
+    delete "$projectDir/src/generated-sources"
+}

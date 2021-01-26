@@ -1,0 +1,14 @@
+configure(subprojects) {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        api 'org.hamcrest:hamcrest:2.1'
+        api 'junit:junit:4.12'
+    }
+}

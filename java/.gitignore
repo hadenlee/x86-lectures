@@ -1,0 +1,11 @@
+.idea/
+.gradle/
+.settings/
+.project
+.classpath
+gradle/*
+common/out/
+java.iml
+gradlew
+gradlew.bat
+
