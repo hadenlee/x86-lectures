@@ -52,7 +52,7 @@ public class RevenueExample {
         // You'll notice that this prints to the console output in no particular order
         // (and it changes every time you run your Java program). This is because "PCollection" does not
         // preserve/maintain order at all (for the sake of maximum parallelization).
-        System.out.format("Line read: %s\n", elem);
+        LOG.info("Line read: {}\n", elem);
         //------------------------------------------------------------------
 
         out.output(getMyProduct(elem));
@@ -74,7 +74,7 @@ public class RevenueExample {
       products.apply(ParDo.of(new DoFn<MyProduct, KV<String, MyProduct>>() {
         // Notice that the method signature differs in this DoFn and the one from earlier.
         // There are two ways to express your 'ProcessElement' method (using @Element annotation or using ProcessContext),
-        // and either way is acceptable in this course. 
+        // and either way is acceptable in this course.
         @ProcessElement public void process(ProcessContext c) {
           MyProduct elem = c.element();
           c.output(KV.of(elem.getId(), elem));
