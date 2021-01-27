@@ -30,6 +30,7 @@ public class TestTeamQuiz01 {
     // If we want to (logically) treat them equal, how can we fix this? (this may be useful in future assignments).
     // Note: There are many ways to achieve this, and any reasonably efficient solution will be accepted.
     // Converting an array into String (e.g., using Arrays.toString()) isn't considered efficient.
+    // You are allowed to (and encouraged to) search the Web like Stackoverflow.
     assertEquals(new int[] {686, 1, 3, 5}, new int[] {686, 1, 3, 5});
   }
 
