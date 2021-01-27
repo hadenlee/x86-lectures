@@ -18,6 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
+/**
+ * This sample code accompanies Lecture L02.
+ * <p>
+ * Read the detailed comments to learn more about Beam SDK.
+ */
 public class WordCountExample {
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
@@ -54,7 +59,7 @@ public class WordCountExample {
     // 'Count.perElement()' can be implemented in many different ways
     // using other basic PTransforms (we'll revisit later).
     PCollection<KV<String, Long>> wordCount = words.apply(Count.perElement());
-    
+
     // Here, we are chaining two PTransforms back-to-back.
     // Filter.by() keeps only the words that appear 100+ times in the input.
     // Keys.create() drops the "values" in KV's, thereby only keeping the keys.
