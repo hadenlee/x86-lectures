@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This sample code accompanies Lecture L02.
+ * This sample code accompanies Lecture L03.
  * <p>
  * Read the detailed comments to learn more about Beam SDK.
  */
@@ -42,7 +42,7 @@ public class RevenueExample {
       p.apply("read from files", TextIO.read().from(String.format("%s/resources/L03-d*.txt", rootDir)));
 
     // -----------------------------------------------------------------------------
-    // DoFn simply describes a custom function (data transformation)
+    // DoFn describes YOUR custom function (data transformation)
     // that you wish to apply to data in parallel (hence, 'Parallel Do = ParDo').
     // You'll be using DoFns often in your assignments, in addition to Beam-provided PTransforms.
     // In this sample code, we're defining an anonymous DoFn class (for simplicity),
@@ -72,8 +72,12 @@ public class RevenueExample {
     // Here is one way to do so using DoFn:
     PCollection<KV<String, MyProduct>> keyedProducts =
       products.apply(ParDo.of(new DoFn<MyProduct, KV<String, MyProduct>>() {
-        @ProcessElement public void process(@Element MyProduct elem, OutputReceiver<KV<String, MyProduct>> out) {
-          out.output(KV.of(elem.getId(), elem));
+        // Notice that the method signature differs in this DoFn and the one from earlier.
+        // There are two ways to express your 'ProcessElement' method (using @Element annotation or using ProcessContext),
+        // and either way is acceptable in this course. 
+        @ProcessElement public void process(ProcessContext c) {
+          MyProduct elem = c.element();
+          c.output(KV.of(elem.getId(), elem));
         }
       }));
     // ^ TODO #2 - as an exercise, try to use one of the element-wise PTransforms provided by Beam SDK
