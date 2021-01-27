@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf;
+
+message MyProduct {
+  string id = 1;
+  int32 units_sold = 2;
+  int64 revenue = 3;
+}
