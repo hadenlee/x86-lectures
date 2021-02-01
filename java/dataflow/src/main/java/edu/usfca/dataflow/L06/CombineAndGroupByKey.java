@@ -17,6 +17,7 @@ import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.SerializableFunction;
 import org.apache.beam.sdk.transforms.SimpleFunction;
+import org.apache.beam.sdk.transforms.Sum;
 import org.apache.beam.sdk.transforms.WithKeys;
 import org.apache.beam.sdk.transforms.join.CoGbkResult;
 import org.apache.beam.sdk.transforms.join.CoGroupByKey;
@@ -183,6 +184,33 @@ public class CombineAndGroupByKey {
         }
       }
     }));
+
+    // ------------------------------------------------------------------------------------------
+    // Implementing 'Sum' using GBK and Combine (see Lecture L06).
+    // You can try to output the final results yourself as an exercise.
+    // Another way is, of course, to use 'Sum' PTransform that's already included in Beam SDK.
+    PCollection<KV<String, Long>> kv =
+      p.apply(Create.of(KV.of("a", 486L), KV.of("b", 686L), KV.of("a", 1000L), KV.of("b", 2000L)));
+
+    kv.apply(GroupByKey.create()).apply(ParDo.of(new DoFn<KV<String, Iterable<Long>>, KV<String, Long>>() {
+      @ProcessElement public void process(ProcessContext c) {
+        long sum = 0;
+        for (Long value : c.element().getValue())
+          sum += value;
+        c.output(KV.of(c.element().getKey(), sum));
+      }
+    }));
+
+    kv.apply(Combine.perKey(new SerializableFunction<Iterable<Long>, Long>() {
+      @Override public Long apply(Iterable<Long> input) {
+        long sum = 0;
+        for (Long value : input)
+          sum += value;
+        return sum;
+      }
+    }));
+
+    kv.apply(Sum.longsPerKey()); // Yay, Beam SDK already offers this functionality!
 
     p.run().
       waitUntilFinish();

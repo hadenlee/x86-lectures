@@ -72,12 +72,13 @@ public class UsingSideInputs {
     // This yields what we want because we've already applied 'Distinct' earlier.
     // Then, we'll apply Filter.by to only keep popular apps (here, threshold being 3 or more unique devices).
     // Lastly, we only need Apps (Strings) not KV<String, Long> (the values being counts), so we'd apply Keys.
-    PCollection<String> popularApps =
-      input.apply(Count.perKey()).apply(Filter.by(new SimpleFunction<KV<String, Long>, Boolean>() {
-        @Override public Boolean apply(KV<String, Long> input) {
-          return input.getValue() >= 3;
-        }
-      })).apply(Keys.create());
+    PCollection<String> popularApps = //
+      input.apply(Count.perKey())//
+        .apply(Filter.by(new SimpleFunction<KV<String, Long>, Boolean>() {
+          @Override public Boolean apply(KV<String, Long> input) {
+            return input.getValue() >= 3;
+          }
+        })).apply(Keys.create());
 
     // Now, we turn to 'Devices'. We first want to group Apps (as value) by DeviceId (as key).
     // Simplest method would be to apply KvSwap to input, and apply GroupByKey.
@@ -117,7 +118,6 @@ public class UsingSideInputs {
         }
       }).withSideInputs(popularAppsView));
 
-    p.run().
-      waitUntilFinish();
+    p.run().waitUntilFinish();
   }
 }
