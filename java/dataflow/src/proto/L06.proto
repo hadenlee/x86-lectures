@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf;
+
+// for this sample code, we'll just using one string field.
+message L06DeviceId {
+  string id = 1;
+}
+
+message L06Purchase {
+  L06DeviceId dev_id = 1;
+  int64 iap_total = 2;
+  repeated string iap_app = 3;
+}
