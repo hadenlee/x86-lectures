@@ -27,7 +27,7 @@ public class UsefulTransforms {
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) {
-    LOG.info("hello?! This is for L03!");
+    LOG.info("hello?! This is for L04!");
     // NOTE: This should end in ".../java/dataflow"
     final String rootDir = System.getProperty("user.dir");
     System.out.println("User Dir Root: " + rootDir);
@@ -60,11 +60,11 @@ public class UsefulTransforms {
 
     // Let's join courses and majors using their common key (Student ID).
     // We first create TupleTags as these 'tags' will be used to retrieve joined values.
-    TupleTag<Integer> courseTag = new TupleTag<>();
-    TupleTag<String> majorTag = new TupleTag<>();
     // Notice that we are first building a KeyedPCollectionTuple (by associating courses PC with courseTag and majors PC with majorTag).
     // As a result of CoGroupByKey, we get KV<String, CoGbkResult>.
     // CoGbkResult is a map from TupleTags to Iterables (hence, we need TupleTags!).
+    TupleTag<Integer> courseTag = new TupleTag<>();
+    TupleTag<String> majorTag = new TupleTag<>();
     PCollection<KV<String, CoGbkResult>> merged =
       KeyedPCollectionTuple.of(courseTag, courses).and(majorTag, majors).apply(CoGroupByKey.create());
 
