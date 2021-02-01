@@ -7,6 +7,8 @@ import org.apache.beam.sdk.values.PCollection;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
 public class TestTeamQuiz01 {
@@ -47,6 +49,34 @@ public class TestTeamQuiz01 {
     // How does it do it? (Specifically, which Java libraries does Beam SDK use to do this easily?)
     // You will need to read some code in Beam SDK by following its declaration (what fun!).
     PAssert.that(H).containsInAnyOrder(new int[] {999});
+
+    tp.run(); // <- This "triggers" JVM to execute PAssert() statements from earlier.
+  }
+
+  // --------------------------
+
+  void dummy1(String x, String... y) {
+    System.out.println(x + " " + Arrays.toString(y));
+  }
+
+  void dummy2(String... z) {
+    System.out.println(Arrays.toString(z));
+  }
+
+  @Test public void teamQuiz_playground() {
+    dummy1("abc", new String[] {"p", "q"});
+    dummy2("abc");
+    dummy2(new String[] {"p", "q"});
+
+    PCollection<String[]> A = tp.apply("A", Create.of(new String[] {"data", "processing"}));
+    PAssert.that(A).containsInAnyOrder(new String[] {"data", "processing"});
+    PAssert.that(A).containsInAnyOrder(new String[] {"processing", "data"});
+
+    String[] s1 = new String[] {"data", "processing"};
+    String[] s2 = new String[] {"new", "array"};
+
+    PCollection<String[]> B = tp.apply("B", Create.<String[]>of(s1, s2));
+    PAssert.that(B).containsInAnyOrder(new String[] {"data", "processing"});
 
     tp.run(); // <- This "triggers" JVM to execute PAssert() statements from earlier.
   }
