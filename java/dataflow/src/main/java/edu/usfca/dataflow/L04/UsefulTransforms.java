@@ -65,6 +65,7 @@ public class UsefulTransforms {
     // CoGbkResult is a map from TupleTags to Iterables (hence, we need TupleTags!).
     TupleTag<Integer> courseTag = new TupleTag<>();
     TupleTag<String> majorTag = new TupleTag<>();
+    // NOTE: We will learn more about CoGroupByKey in Lecture L05, and you'll want to revisit this sample code.
     PCollection<KV<String, CoGbkResult>> merged =
       KeyedPCollectionTuple.of(courseTag, courses).and(majorTag, majors).apply(CoGroupByKey.create());
 
