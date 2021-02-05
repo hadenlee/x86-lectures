@@ -7,3 +7,8 @@ You should import (in your IDE) the main Java directory as a Gradle project (jus
 You can also execute the main method like: `$ gradle -p dataflow` (execute this inside your `java` directory) or `$ gradle -p java/dataflow` (execute this in your repo's root dir). The `-p` argument specifies the gradle project to be run (in this case, `dataflow`).
 
 - Lecture [L02](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L02)
+- Lecture [L03](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L03)
+- Lecture [L04](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L04)
+- Lecture [L05](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L05)
+- Lecture [L06](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L06)
+
