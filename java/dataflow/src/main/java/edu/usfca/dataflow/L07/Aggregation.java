@@ -71,7 +71,6 @@ public class Aggregation {
     // Instead of using TupleTags, we can use "String" names for shorter code.
     // The downside of this approach is, unlike TupleTags, the compiler can't type-check at compile time.
     // Therefore, this code will throw a ClassCastException (which is a RuntimeException).
-    // TODO - Fix this code before running it!
     // Here is the expected output (to the console): (Order may differ)
     // As expected, the sum (33) is equal for key a
     // As expected, the sum (45) is equal for key b
@@ -79,24 +78,27 @@ public class Aggregation {
     // As expected, the sum (69) is equal for key d
     // As expected, the sum (57) is equal for key c
     KeyedPCollectionTuple.of("sum1", sum1).and("sum2", sum2).apply(CoGroupByKey.create())
-      .apply(ParDo.of(new DoFn<KV<String, CoGbkResult>, Void>() {
-        @ProcessElement public void process(ProcessContext c) {
-          final String key = c.element().getKey();
-          // In the next two lines, compiler can't check if your proposed types are correct/safe or not.
-          // You should fix these two lines. (TODO)
-          final Integer s1 = c.element().getValue().getOnly("sum1", 0);
-          final Integer s2 = c.element().getValue().getOnly("sum2", 0);
-          // ---------------------------------------------------------------------------------------------
-          if (s1.compareTo(s2) == 0) {
-            System.out.format("As expected, the sum (%d) is equal for key %s\n", s1, key);
-          } else {
-            throw new RuntimeException(
-              String.format("Something must have gone wrong for key %s (got %d vs %d)\n", key, s1, s2));
-          }
-        }
-      }));
+      .apply(ParDo.of(new CompareTwoSums()));
 
     p.run().
       waitUntilFinish();
+  }
+
+  public static class CompareTwoSums extends DoFn<KV<String, CoGbkResult>, Void> {
+    @ProcessElement public void process(ProcessContext c) {
+      final String key = c.element().getKey();
+      // TODO - Fix this code before running it!
+      // In the next two lines, compiler can't check if your proposed types are correct/safe or not.
+      // You should fix these two lines. (TODO)
+      final Integer s1 = c.element().getValue().getOnly("sum1", 0);
+      final Integer s2 = c.element().getValue().getOnly("sum2", 0);
+      // ---------------------------------------------------------------------------------------------
+      if (s1.compareTo(s2) == 0) {
+        System.out.format("As expected, the sum (%d) is equal for key %s\n", s1, key);
+      } else {
+        throw new RuntimeException(
+          String.format("Something must have gone wrong for key %s (got %d vs %d)\n", key, s1, s2));
+      }
+    }
   }
 }
