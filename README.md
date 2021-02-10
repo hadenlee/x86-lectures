@@ -11,4 +11,6 @@ You can also execute the main method like: `$ gradle -p dataflow` (execute this 
 - Lecture [L04](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L04)
 - Lecture [L05](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L05)
 - Lecture [L06](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L06)
-
+- Lecture [L07](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L07)
+- Lecture [L08](https://github.com/hadenlee/x86-lectures/tree/master/java/dataflow/src/main/java/edu/usfca/dataflow/L08)
+  
