@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf.lectures;
+
+message Entry {
+  string id = 1;
+  int32 val = 2;
+}
+
+message Dummy {
+  Entry e1 = 1;
+  
+  repeated int32 v = 2;
+  
+  repeated Entry e2 = 3;
+}
+
+message Map1 {
+  map<string, int32> m1 = 1;
+  
+  repeated Entry m2 = 2;
+}
+
+message Map2 {
+  repeated string id = 1;
+  repeated int32 val = 2;
+}
+

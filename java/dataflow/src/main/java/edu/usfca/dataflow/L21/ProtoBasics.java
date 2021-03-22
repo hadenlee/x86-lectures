@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class ProtoBasics {
   private static final Logger LOG = LoggerFactory.getLogger(ProtoBasics.class);
 
-  static void printMessage(Message msg) {
+  public static void printMessage(Message msg) {
     byte[] arr = msg.toByteArray();
     System.out.format("array length = %3d\n", arr.length);
     for (byte b : arr) {
