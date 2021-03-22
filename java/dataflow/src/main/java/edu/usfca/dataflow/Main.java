@@ -1,7 +1,7 @@
 package edu.usfca.dataflow;
 
 
-import edu.usfca.dataflow.L08.AnotherCombineFn;
+import edu.usfca.dataflow.L21.ProtoBasics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +13,6 @@ public class Main {
 
   public static void main(String[] args) {
     // Change the following line to execute a specific main method.
-    AnotherCombineFn.main(args);
+    ProtoBasics.run();
   }
 }

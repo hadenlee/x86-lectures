@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf.lectures.L21;
+
+message Simple {
+  string id = 686;
+  int32 val = 10;
+}
+
+message Simple2 {
+  string id = 2;
+  int32 val = 1;
+}
+
+message Numbers {
+  int32 v1 = 1;
+  uint32 v2 = 2;
+  sint32 v3 = 3;
+  fixed32 v4 = 4;
+  sfixed32 v5 = 5;
+}
