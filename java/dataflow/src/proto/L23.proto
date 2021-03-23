@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf.lectures;
+
+message Msg1 {
+  string name = 1;
+  int32 val = 2;
+  repeated string arr = 4;
+}
+
+message Msg2 {
+  string name = 1;
+  int64 val = 2;
+}
+
+message Msg3 {
+  repeated Phone1 v = 1;
+}
+message Msg4 {
+  repeated Phone2 v = 1;
+}
+
+
+enum Phone1 {
+  PHONE1_UNSPECIFIED = 0;
+  PHONE1_2G = 1;
+  PHONE1_BLACKBERRY = 2;
+  PHONE1_WINDOWS = 150;
+}
+
+enum Phone2 {
+  PHONE2_UNSPECIFIED = 0;
+  PHONE2_2G = 1;
+  PHONE2_ANDROID = 4;
+  PHONE2_IOS = 5;
+}

@@ -1,6 +1,5 @@
 package edu.usfca.dataflow.L22;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import edu.usfca.dataflow.L21.ProtoBasics;
 import edu.usfca.protobuf.lectures.L22.Dummy;
 import edu.usfca.protobuf.lectures.L22.Entry;
@@ -10,29 +9,6 @@ import edu.usfca.protobuf.lectures.L22.Map2;
 public class ProtoAdvanced {
 
   public static void run() {
-    Map1.Builder m1 = Map1.newBuilder();
-
-    m1.putM1("AB", 10);
-    ProtoBasics.printMessage(m1.build());
-    m1.putM1("AB", 100);
-    ProtoBasics.printMessage(m1.build());
-
-
-    Map1 m2 = null;
-    try {
-      byte[] data =
-        new byte[] {0x0A, 0x06, 0x0A, 0x02, 0x41, 0x42, 0x10, 0x0A, 0x0A, 0x06, 0x0A, 0x02, 0x41, 0x42, 0x10, 0x64};
-      m2 = Map1.parseFrom(data);
-      ProtoBasics.printMessage(m2);
-
-      byte[] data2 =
-        new byte[] {0x0A, 0x06, 0x0A, 0x02, 0x41, 0x42, 0x10, 0x64, 0x0A, 0x06, 0x0A, 0x02, 0x41, 0x42, 0x10, 0x0A};
-      m2 = Map1.parseFrom(data2);
-      ProtoBasics.printMessage(m2);
-    } catch (InvalidProtocolBufferException e) {
-      e.printStackTrace();
-    }
-
   }
 
   static void example5() {
