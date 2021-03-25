@@ -45,7 +45,8 @@ public class ProtoVersioning {
 
     try {
       Msg4 m4 = Msg4.parseFrom(data);
-      ProtoBasics.printMessage(m4);
+      ProtoBasics.printMessage(
+        m4); // <- Notice that even though "150" is an unrecognized enum value, it's preserved through serialization.
 
       print(m3.build());
       print(m4);
