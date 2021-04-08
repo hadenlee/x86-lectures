@@ -25,7 +25,7 @@ public class TriggersAndPanes {
   public static void run() {
     //    example1Accumulate();
     //    example1Discard();
-    //    example2Accumulate();
+    example2Accumulate();
     example2Discard();
   }
 
@@ -36,7 +36,7 @@ public class TriggersAndPanes {
     final long minute = Duration.ofMinutes(1).toMillis();
     List<KV<Long, Integer>> input = new ArrayList<>();
     for (int i = 0; i < 19; i++) {
-      int val = (1 << (i % 10)) + 1_000_000 * (i / 10);
+      int val = (1 << (i % 10));
       input.add(KV.of(ts + minute * i, val));
       System.out.format("%d ", val);
     }
@@ -57,20 +57,15 @@ public class TriggersAndPanes {
       .apply(ParDo.of(new DoFn<KV<String, Integer>, Void>() {
         @ProcessElement public void process(ProcessContext c) {
           int sum = c.element().getValue();
-          boolean flag = false;
-          while (sum > 1_000_000) {
-            sum -= 1_000_000;
-            flag = true;
-          }
           StringBuffer sb = new StringBuffer();
           while (sum > 0) {
             int val = sum & (sum ^ (sum - 1));
 
-            sb.append(" " + (flag ? 1_000_000 + val : val));
+            sb.append(" " + val);
             sum -= val;
           }
           System.out
-            .format("[GBK] sum: [%d from%s]\ntimestamp:%s  pane: %s\n\n", c.element().getValue(), sb.toString(),//
+            .format("[SUM] sum: [%d from%s]\ntimestamp:%s  pane: %s\n\n", c.element().getValue(), sb.toString(),//
               c.timestamp(), c.pane());
         }
       }));
@@ -86,7 +81,7 @@ public class TriggersAndPanes {
     final long minute = Duration.ofMinutes(1).toMillis();
     List<KV<Long, Integer>> input = new ArrayList<>();
     for (int i = 0; i < 19; i++) {
-      int val = (1 << (i % 10)) + 1_000_000 * (i / 10);
+      int val = (1 << (i % 10));
       input.add(KV.of(ts + minute * i, val));
       System.out.format("%d ", val);
     }
@@ -99,28 +94,23 @@ public class TriggersAndPanes {
             org.joda.time.Instant.ofEpochMilli(c.element().getKey()));
         }
       }));
-    Trigger trigger = Repeatedly.forever(AfterPane.elementCountAtLeast(3));
 
+    Trigger trigger = Repeatedly.forever(AfterPane.elementCountAtLeast(3));
     timedData.apply(
       Window.<KV<String, Integer>>into(FixedWindows.of(org.joda.time.Duration.standardMinutes(10))).triggering(trigger)
         .accumulatingFiredPanes().withAllowedLateness(org.joda.time.Duration.ZERO)).apply(Sum.integersPerKey())
       .apply(ParDo.of(new DoFn<KV<String, Integer>, Void>() {
         @ProcessElement public void process(ProcessContext c) {
           int sum = c.element().getValue();
-          boolean flag = false;
-          while (sum > 1_000_000) {
-            sum -= 1_000_000;
-            flag = true;
-          }
           StringBuffer sb = new StringBuffer();
           while (sum > 0) {
             int val = sum & (sum ^ (sum - 1));
 
-            sb.append(" " + (flag ? 1_000_000 + val : val));
+            sb.append(" " + val);
             sum -= val;
           }
           System.out
-            .format("[GBK] sum: [%d from%s]\ntimestamp:%s  pane: %s\n\n", c.element().getValue(), sb.toString(),//
+            .format("[SUM] sum: [%d from%s]\ntimestamp:%s  pane: %s\n\n", c.element().getValue(), sb.toString(),//
               c.timestamp(), c.pane());
         }
       }));
@@ -179,6 +169,7 @@ public class TriggersAndPanes {
             org.joda.time.Instant.ofEpochMilli(c.element().getKey()));
         }
       }));
+
     Trigger trigger = Repeatedly.forever(AfterPane.elementCountAtLeast(3));
 
     timedData.apply(
