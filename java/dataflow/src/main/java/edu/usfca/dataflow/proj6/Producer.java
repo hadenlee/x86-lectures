@@ -30,6 +30,8 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+// NOTE - This may be used in project 6 for live testing.
+// It is currently experimental, and the code may be changed later.
 public class Producer {
   private static final Logger LOG = LoggerFactory.getLogger(Producer.class);
 
