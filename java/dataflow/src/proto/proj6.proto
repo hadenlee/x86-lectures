@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package edu.usfca.protobuf.proj;
+
+// Each mobile device uses either Android or iOS.
+enum OsType {
+  OS_UNSPECIFIED = 0;
+  OS_ANDROID = 1;
+  OS_IOS = 2;
+}
+
+// Device Id uniquely identifies a mobile device.
+// It has $os (Ostype) and either uuid or webid (string), but not both.
+message DeviceId {
+  OsType os = 1;
+  
+  // Note this "oneof" keyword.
+  oneof id {
+    string uuid = 2; // case-insensitive.
+    string webid = 3; // case-sensitive.
+  }
+}
+
+message SalesEvent {
+  DeviceId id = 1;
+  string bundle = 2; // case-sensitive.
+  int32 amount = 3;
+}
