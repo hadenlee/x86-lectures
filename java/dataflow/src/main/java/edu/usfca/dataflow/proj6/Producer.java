@@ -66,7 +66,7 @@ public class Producer {
     PCollection<KV<Integer, Integer>> initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps())));
 
     if (options.getFullScale() && !options.getIsLocal()) {
-      if (options.getQps() >= 400) {
+      if (options.getQps() >= 300) {
         options.setWorkerMachineType("n1-standard-4");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
       } else {
