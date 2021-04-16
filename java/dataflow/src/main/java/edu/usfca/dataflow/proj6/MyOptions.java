@@ -21,5 +21,9 @@ public interface MyOptions extends DataflowPipelineOptions {
   @Description("max messages per second.") @Default.Integer(0) int getQps();
 
   void setQps(int qps);
+
+  @Description("full scale if true") @Default.Boolean(false) boolean getFullScale();
+
+  void setFullScale(boolean value);
 }
 
