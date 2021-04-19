@@ -67,10 +67,10 @@ public class Producer {
     ;
 
     if (options.getFullScale() && !options.getIsLocal()) {
-      if (options.getQps() >= 1000) {// 1000
+      if (options.getQps() >= 800) {// 800
         options.setWorkerMachineType("n1-standard-4");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 4)));
-      } else if (options.getQps() >= 500) { // 500
+      } else if (options.getQps() >= 400) { // 400
         options.setWorkerMachineType("n1-standard-2");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
       } else {// 50, 150
