@@ -234,14 +234,14 @@ public class Producer {
               cnt++;
             }
             fireAndWait(begin + 700 - Instant.now().getMillis());
-            LOG.info("[process] moving on... cnt = {} (%d/71 check)", cnt, cnt / qps);
+            LOG.info("[process] moving on... cnt = {} ({}/71 check)", cnt, cnt / qps);
             if (cnt == 71 * qps) {
               LOG.info("[process] end for this window. cnt = {} check", cnt);
               break;
             }
           }
           total += cnt;
-          LOG.info("[process] published {} messages (grand total {})", cnt, total);
+          LOG.info("[process] published {} messages ({} final) (grand total {})", cnt, cnt / qps, total);
           c.output(String.format("%d,%d,%d", t1, t2, cnt));
 
         }
