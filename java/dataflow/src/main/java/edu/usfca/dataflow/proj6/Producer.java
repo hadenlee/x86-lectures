@@ -73,7 +73,7 @@ public class Producer {
       } else if (options.getQps() >= 500) { // 500
         options.setWorkerMachineType("n1-standard-2");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
-      } else {// 20, 200
+      } else {// 50, 150
         options.setWorkerMachineType("n1-standard-1");
       }
       options.setMaxNumWorkers(1);
