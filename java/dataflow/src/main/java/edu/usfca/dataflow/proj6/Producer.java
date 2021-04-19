@@ -67,12 +67,7 @@ public class Producer {
     ;
 
     if (options.getFullScale() && !options.getIsLocal()) {
-      if (options.getQps() >= 300) { // 300, 500?
-        options.setWorkerMachineType("n1-standard-2");
-        initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
-      } else {// 50, 150
-        options.setWorkerMachineType("n1-standard-1");
-      }
+      options.setWorkerMachineType("n1-standard-1");
       options.setMaxNumWorkers(1);
 
       initData = initData.apply(ParDo.of(new DoFn<KV<Integer, Integer>, KV<Integer, KV<Integer, Integer>>>() {
