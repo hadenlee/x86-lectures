@@ -75,9 +75,14 @@ public class Producer {
       options.setMaxNumWorkers(1);
 
       initData = initData.apply(ParDo.of(new DoFn<KV<Integer, Integer>, KV<Integer, KV<Integer, Integer>>>() {
+        Random rn;
+
+        @Setup public void setup() {
+          rn = new Random();
+        }
+
         @ProcessElement public void process(ProcessContext c) {
-          Random rn = new Random();
-          for (int i = 0; i < 1_000; i++) {
+          for (int i = 0; i < 1_000_000; i++) {
             c.output(KV.of(rn.nextInt(), c.element()));
           }
         }
@@ -228,8 +233,11 @@ public class Producer {
               pub(ByteString.copyFromUtf8(sb.toString()));
               cnt++;
             }
-            fireAndWait(begin + 800 - Instant.now().getMillis());
-            LOG.info("[process] moving on... cnt = {}", cnt);
+            fireAndWait(begin + 700 - Instant.now().getMillis());
+            LOG.info("[process] moving on... cnt = {} (%d/71)", cnt, cnt / qps);
+            if (cnt == 71 * qps) {
+              LOG.info("[process] end for this window. cnt = {}", cnt);
+            }
           }
           total += cnt;
           LOG.info("[process] published {} messages (grand total {})", cnt, total);
