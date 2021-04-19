@@ -63,14 +63,18 @@ public class Producer {
     }
 
 
-    PCollection<KV<Integer, Integer>> initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps())));
+    PCollection<KV<Integer, Integer>> initData;
 
     if (options.getFullScale() && !options.getIsLocal()) {
-      if (options.getQps() >= 300) {
+      if (options.getQps() >= 1000) {// 1000
         options.setWorkerMachineType("n1-standard-4");
-        initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
-      } else {
+        initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 4)));
+      } else if (options.getQps() >= 500) { // 500
         options.setWorkerMachineType("n1-standard-2");
+        initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
+      } else {// 20, 200
+        options.setWorkerMachineType("n1-standard-1");
+        initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps())));
       }
       options.setMaxNumWorkers(1);
 
@@ -195,6 +199,7 @@ public class Producer {
         done = true;
         final long durationSec = c.element().getKey() * 60L;
         final long qps = c.element().getValue();
+        final int numBatches = 200;
 
         long total = 0;
         int cntWindows = 0;
@@ -221,6 +226,15 @@ public class Producer {
           int cnt = 0;
           Random rnd = new Random(68686 + ((t2 / 1000L / 60L) % 60));
           while (durationSec - (Instant.now().getMillis() / 1000L) % durationSec > 3) {
+            if (cnt == numBatches * qps) {
+              if (t2 + 59 * 1000L - Instant.now().getMillis() > 3000L) {
+                fireAndWait(t2 + 59 * 1000L - Instant.now().getMillis() - 2000L);
+              } else {
+                fireAndWait(200L);
+              }
+              LOG.info("[process] waiting to close the window (cnt = {} with {} batches)", cnt, cnt / qps);
+              continue;
+            }
             final long begin = Instant.now().getMillis();
             for (long i = 0; i < qps; i++) {
               StringBuffer sb = new StringBuffer();
@@ -233,17 +247,16 @@ public class Producer {
               pub(ByteString.copyFromUtf8(sb.toString()));
               cnt++;
             }
-            fireAndWait(begin + 700 - Instant.now().getMillis());
-            LOG.info("[process] moving on... cnt = {} ({}/71 check)", cnt, cnt / qps);
-            if (cnt == 71 * qps) {
+            final long latency = Instant.now().getMillis() - begin;
+            LOG.info("[process] moving on... cnt = {} ({}/{} check; latency {})", cnt, cnt / qps, numBatches, latency);
+            fireAndWait(begin + 50 - Instant.now().getMillis());
+            if (cnt == numBatches * qps) {
               LOG.info("[process] end for this window. cnt = {} check", cnt);
-              break;
             }
           }
           total += cnt;
-          LOG.info("[process] published {} messages ({} final) (grand total {})", cnt, cnt / qps, total);
+          LOG.info("[process] published {} messages ({} batches) (grand total {})", cnt, cnt / qps, total);
           c.output(String.format("%d,%d,%d", t1, t2, cnt));
-
         }
         LOG.info("[process] published {} messages (grand total)", total);
       }
