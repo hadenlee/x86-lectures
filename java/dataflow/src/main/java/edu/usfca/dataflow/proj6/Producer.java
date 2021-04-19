@@ -234,9 +234,10 @@ public class Producer {
               cnt++;
             }
             fireAndWait(begin + 700 - Instant.now().getMillis());
-            LOG.info("[process] moving on... cnt = {} (%d/71)", cnt, cnt / qps);
+            LOG.info("[process] moving on... cnt = {} (%d/71 check)", cnt, cnt / qps);
             if (cnt == 71 * qps) {
-              LOG.info("[process] end for this window. cnt = {}", cnt);
+              LOG.info("[process] end for this window. cnt = {} check", cnt);
+              break;
             }
           }
           total += cnt;
