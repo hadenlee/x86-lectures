@@ -3,6 +3,7 @@ package edu.usfca.dataflow.proj6;
 import com.google.api.core.ApiFuture;
 import com.google.api.core.ApiFutureCallback;
 import com.google.api.core.ApiFutures;
+import com.google.api.gax.batching.BatchingSettings;
 import com.google.cloud.pubsub.v1.Publisher;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +70,7 @@ public class Producer {
 
     if (options.getFullScale() && !options.getIsLocal()) {
       options.setMaxNumWorkers(1);
-      if (options.getQps() >= 300) { // 300, 400
+      if (options.getQps() >= 300) { // 300
         options.setWorkerMachineType("n1-standard-2");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
       } else {// 50, 150
@@ -119,8 +121,10 @@ public class Producer {
             .setBundle("dummy").setAmount(1).build()));
 
         topicName = TopicName.of(GCP_PROJECT_ID, MAIN_TOPIC_ID);
-        publisher = Publisher.newBuilder(topicName).build();
-
+        publisher = Publisher.newBuilder(topicName)//
+          .setBatchingSettings(
+            BatchingSettings.newBuilder().setElementCountThreshold(10L).setDelayThreshold(Duration.ofMillis(10L))
+              .setRequestByteThreshold(20_000L).build()).build();
 
         Random rnd = new Random(686);
         List<DeviceId> id = new ArrayList<>();
