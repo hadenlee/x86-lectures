@@ -18,6 +18,7 @@ import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.runners.direct.DirectRunner;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.metrics.Metrics;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.transforms.DoFn;
@@ -70,10 +71,10 @@ public class Producer {
 
     if (options.getFullScale() && !options.getIsLocal()) {
       options.setMaxNumWorkers(1);
-      if (options.getQps() >= 300) { // 300
+      if (options.getQps() > 200) { // 400
         options.setWorkerMachineType("n1-standard-2");
         initData = p.apply(Create.of(KV.of(options.getDuration(), options.getQps() / 2)));
-      } else {// 50, 150
+      } else {// 50, 200
         options.setWorkerMachineType("n1-standard-1");
       }
 
@@ -244,6 +245,10 @@ public class Producer {
               cnt++;
             }
             final long latency = Instant.now().getMillis() - begin;
+
+            Metrics.counter("PUB", "cnt_messages").inc(qps);
+            Metrics.distribution("PUB", "latency").update(latency);
+
             LOG.info("[process] moving on... cnt = {} ({}/{} check; latency {})", cnt, cnt / qps, numBatches, latency);
             fireAndWait(begin + 100 - Instant.now().getMillis());
             if (cnt == numBatches * qps) {
